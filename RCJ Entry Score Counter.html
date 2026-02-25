@@ -33,9 +33,14 @@
         .segment-row { display: grid; grid-template-columns: 2fr 1fr 1.5fr auto; gap: 10px; align-items: center; background: var(--light); padding: 10px; border-radius: 5px; margin-bottom: 10px; border: 1px solid #dee2e6; }
         .segment-row select, .segment-row input { padding: 8px; border: 1px solid #ced4da; border-radius: 4px; }
         .btn-add { background: var(--primary); color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; }
+        .btn-save { background: var(--success); color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; font-size: 16px;}
         
-        .score-board { background: var(--success); color: white; text-align: center; padding: 20px; border-radius: 8px; font-size: 32px; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.2); position: sticky; bottom: 20px; }
+        .score-board { background: var(--success); color: white; text-align: center; padding: 20px; border-radius: 8px; font-size: 32px; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.2); position: sticky; bottom: 20px; z-index: 100;}
         .score-breakdown { font-size: 16px; font-weight: normal; margin-top: 5px; opacity: 0.9; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { padding: 10px; border: 1px solid #dee2e6; text-align: center; }
+        th { background-color: var(--light); }
     </style>
 </head>
 <body>
@@ -58,11 +63,11 @@
         <div class="info-grid">
             <div class="form-group">
                 <label>Competition Name</label>
-                <input type="text" placeholder="Enter Competition Name">
+                <input type="text" id="compName" placeholder="e.g., Mock Run 1">
             </div>
             <div class="form-group">
                 <label>Team Name & Round</label>
-                <input type="text" placeholder="e.g., Team Alpha - Round 1">
+                <input type="text" id="teamName" placeholder="e.g., Team Alpha - Round 1">
             </div>
         </div>
     </div>
@@ -102,9 +107,33 @@
 
     <div class="card">
         <h3>2. Checkpoint Progression</h3>
-        <div id="segmentsContainer">
-            </div>
+        <div id="segmentsContainer"></div>
         <button class="btn-add" onclick="addSegment()">+ Add Next Checkpoint Segment</button>
+    </div>
+
+    <div class="card">
+        <h3>3. U12 Tasks & Actions</h3>
+        <label style="font-size: 16px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 10px;">
+            <input type="checkbox" id="redLineCheck" style="width: 20px; height: 20px;">
+            Red Line Stop Detected successfully
+        </label>
+        <button class="btn-save" onclick="saveRun()">💾 Save Run to Log</button>
+        <button class="btn-add" onclick="exportToCSV()" style="background: #17a2b8;">📥 Download Log as CSV</button>
+        
+        <h4 style="margin-top: 20px; border-bottom: 1px solid #ccc;">Session Log</h4>
+        <table id="logTable">
+            <thead>
+                <tr>
+                    <th>Team/Round</th>
+                    <th>Hazards</th>
+                    <th>Tiles</th>
+                    <th>Red Line</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody id="logBody">
+                </tbody>
+        </table>
     </div>
 
     <div class="score-board">
@@ -176,8 +205,51 @@
     // Initialize with one segment
     addSegment();
 
+    // --- LOG & CSV LOGIC ---
+    let runLogs = [];
+
+    function saveRun() {
+        let team = document.getElementById('teamName').value || "Unnamed Team";
+        let hazards = document.getElementById('hazardTotal').innerText;
+        let tiles = document.getElementById('tileTotal').innerText;
+        let total = document.getElementById('totalScore').innerText;
+        let redLine = document.getElementById('redLineCheck').checked ? "Pass" : "Fail";
+
+        runLogs.push({ team, hazards, tiles, redLine, total });
+
+        let tbody = document.getElementById('logBody');
+        let row = `<tr>
+            <td>${team}</td>
+            <td>${hazards}</td>
+            <td>${tiles}</td>
+            <td>${redLine}</td>
+            <td><strong>${total}</strong></td>
+        </tr>`;
+        tbody.innerHTML += row;
+
+        alert("Run saved to log!");
+    }
+
+    function exportToCSV() {
+        if (runLogs.length === 0) {
+            alert("No runs saved yet. Click 'Save Run to Log' first.");
+            return;
+        }
+        let csv = "Team/Round,Hazard Points,Tile Points,Red Line Stop,Total Score\n";
+        runLogs.forEach(log => {
+            csv += `"${log.team}",${log.hazards},${log.tiles},${log.redLine},${log.total}\n`;
+        });
+
+        let blob = new Blob([csv], { type: 'text/csv' });
+        let url = window.URL.createObjectURL(blob);
+        let a = document.createElement('a');
+        a.setAttribute('href', url);
+        a.setAttribute('download', `RCAP_U12_Session_Log.csv`);
+        a.click();
+    }
+
     // --- TIMER LOGIC ---
-    let timeLeft = 300; // 5 minutes in seconds
+    let timeLeft = 300; 
     let timerInterval = null;
 
     function updateTimerDisplay() {
