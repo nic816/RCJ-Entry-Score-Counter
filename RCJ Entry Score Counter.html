@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RCAP U12 Pro Score Tracker</title>
+    <style>
+        :root { --primary: #0056b3; --success: #28a745; --danger: #dc3545; --dark: #343a40; --light: #f8f9fa; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #e9ecef; margin: 0; padding: 20px; color: #333; }
+        .container { max-width: 800px; margin: auto; }
+        .header-panel { background: var(--dark); color: white; padding: 15px 20px; border-radius: 8px 8px 0 0; display: flex; justify-content: space-between; align-items: center; }
+        .header-panel h2 { margin: 0; font-size: 20px; }
+        .timer-display { font-size: 28px; font-family: monospace; font-weight: bold; background: black; padding: 5px 15px; border-radius: 5px; letter-spacing: 2px; }
+        .timer-controls button { margin-left: 5px; padding: 8px 12px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .btn-start { background: var(--success); color: white; }
+        .btn-stop { background: var(--danger); color: white; }
+        .btn-reset { background: #ffc107; color: black; }
+        
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .card h3 { margin-top: 0; border-bottom: 2px solid var(--light); padding-bottom: 10px; color: var(--primary); }
+        
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .form-group label { font-weight: bold; display: block; margin-bottom: 5px; font-size: 14px; }
+        .form-group input { width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 4px; box-sizing: border-box; }
+        
+        .hazard-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; text-align: center; }
+        .hazard-box { background: var(--light); padding: 15px; border-radius: 8px; border: 1px solid #dee2e6; }
+        .hazard-box span { display: block; font-size: 12px; color: #6c757d; margin-bottom: 10px; }
+        .btn-group { display: flex; justify-content: center; align-items: center; gap: 15px; }
+        .btn-group button { width: 40px; height: 40px; font-size: 20px; border: none; border-radius: 5px; background: var(--primary); color: white; cursor: pointer; }
+        .btn-group span { font-size: 22px; font-weight: bold; width: 30px; }
+        
+        .segment-row { display: grid; grid-template-columns: 2fr 1fr 1.5fr auto; gap: 10px; align-items: center; background: var(--light); padding: 10px; border-radius: 5px; margin-bottom: 10px; border: 1px solid #dee2e6; }
+        .segment-row select, .segment-row input { padding: 8px; border: 1px solid #ced4da; border-radius: 4px; }
+        .btn-add { background: var(--primary); color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; }
+        
+        .score-board { background: var(--success); color: white; text-align: center; padding: 20px; border-radius: 8px; font-size: 32px; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.2); position: sticky; bottom: 20px; }
+        .score-breakdown { font-size: 16px; font-weight: normal; margin-top: 5px; opacity: 0.9; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    
+    <div class="header-panel">
+        <h2>RCAP U12 Scoring</h2>
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <div class="timer-display" id="timerDisplay">05:00</div>
+            <div class="timer-controls">
+                <button class="btn-start" onclick="startTimer()">Start</button>
+                <button class="btn-stop" onclick="stopTimer()">Stop</button>
+                <button class="btn-reset" onclick="resetTimer()">Reset</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="card" style="border-radius: 0 0 8px 8px; margin-top: 0;">
+        <div class="info-grid">
+            <div class="form-group">
+                <label>Competition Name</label>
+                <input type="text" placeholder="Enter Competition Name">
+            </div>
+            <div class="form-group">
+                <label>Team Name & Round</label>
+                <input type="text" placeholder="e.g., Team Alpha - Round 1">
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>1. Hazard Navigation</h3>
+        <div class="hazard-grid">
+            <div class="hazard-box">
+                <strong>Gaps</strong>
+                <span>(10 pts each)</span>
+                <div class="btn-group">
+                    <button onclick="updateCount('gaps', -1)">-</button>
+                    <span id="gaps">0</span>
+                    <button onclick="updateCount('gaps', 1)">+</button>
+                </div>
+            </div>
+            <div class="hazard-box">
+                <strong>Intersections</strong>
+                <span>(10 pts each)</span>
+                <div class="btn-group">
+                    <button onclick="updateCount('intersections', -1)">-</button>
+                    <span id="intersections">0</span>
+                    <button onclick="updateCount('intersections', 1)">+</button>
+                </div>
+            </div>
+            <div class="hazard-box">
+                <strong>Obstacles</strong>
+                <span>(20 pts each)</span>
+                <div class="btn-group">
+                    <button onclick="updateCount('obstacles', -1)">-</button>
+                    <span id="obstacles">0</span>
+                    <button onclick="updateCount('obstacles', 1)">+</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>2. Checkpoint Progression</h3>
+        <div id="segmentsContainer">
+            </div>
+        <button class="btn-add" onclick="addSegment()">+ Add Next Checkpoint Segment</button>
+    </div>
+
+    <div class="score-board">
+        TOTAL SCORE: <span id="totalScore">0</span>
+        <div class="score-breakdown">
+            Hazards: <span id="hazardTotal">0</span> | Tiles: <span id="tileTotal">0</span>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // --- SCORE LOGIC ---
+    let counts = { gaps: 0, intersections: 0, obstacles: 0 };
+    let segmentCount = 0;
+
+    function updateCount(type, change) {
+        if (counts[type] + change >= 0) {
+            counts[type] += change;
+            document.getElementById(type).innerText = counts[type];
+            calculateScore();
+        }
+    }
+
+    function addSegment() {
+        segmentCount++;
+        const container = document.getElementById('segmentsContainer');
+        const row = document.createElement('div');
+        row.className = 'segment-row';
+        row.id = `segment-${segmentCount}`;
+        
+        let segmentName = segmentCount === 1 ? "Start to CP 1" : `CP ${segmentCount-1} to CP ${segmentCount}`;
+        
+        row.innerHTML = `
+            <strong>${segmentName}</strong>
+            <input type="number" min="0" placeholder="Tiles" class="seg-tiles" onchange="calculateScore()">
+            <select class="seg-attempt" onchange="calculateScore()">
+                <option value="5">1st Attempt (x5)</option>
+                <option value="3">2nd Attempt (x3)</option>
+                <option value="2">3rd Attempt (x2)</option>
+                <option value="1">4th+ Attempt (x1)</option>
+            </select>
+            <button onclick="removeSegment('${row.id}')" style="background:var(--danger);color:white;border:none;padding:8px;border-radius:4px;cursor:pointer;">X</button>
+        `;
+        container.appendChild(row);
+        calculateScore();
+    }
+
+    function removeSegment(id) {
+        document.getElementById(id).remove();
+        calculateScore();
+    }
+
+    function calculateScore() {
+        let hazardPoints = (counts.gaps * 10) + (counts.intersections * 10) + (counts.obstacles * 20);
+        
+        let tilePoints = 0;
+        document.querySelectorAll('.segment-row').forEach(row => {
+            let tiles = parseInt(row.querySelector('.seg-tiles').value) || 0;
+            let multiplier = parseInt(row.querySelector('.seg-attempt').value) || 0;
+            tilePoints += (tiles * multiplier);
+        });
+
+        document.getElementById('hazardTotal').innerText = hazardPoints;
+        document.getElementById('tileTotal').innerText = tilePoints;
+        document.getElementById('totalScore').innerText = hazardPoints + tilePoints;
+    }
+
+    // Initialize with one segment
+    addSegment();
+
+    // --- TIMER LOGIC ---
+    let timeLeft = 300; // 5 minutes in seconds
+    let timerInterval = null;
+
+    function updateTimerDisplay() {
+        let minutes = Math.floor(timeLeft / 60);
+        let seconds = timeLeft % 60;
+        document.getElementById('timerDisplay').innerText = 
+            (minutes < 10 ? "0" : "") + minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
+    }
+
+    function startTimer() {
+        if (!timerInterval && timeLeft > 0) {
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+                if (timeLeft <= 0) stopTimer();
+            }, 1000);
+        }
+    }
+
+    function stopTimer() {
+        clearInterval(timerInterval);
+        timerInterval = null;
+    }
+
+    function resetTimer() {
+        stopTimer();
+        timeLeft = 300;
+        updateTimerDisplay();
+    }
+</script>
+
+</body>
+</html>
