@@ -582,17 +582,16 @@
 
         function clearLogs() {
             if (confirm("Are you sure? This will wipe the Google Sheet AND local logs!")) {
-                // 1. Tell Google to clear the sheet
-                let formData = new FormData();
-                formData.append('action', 'clear');
-
-                fetch(scriptURL, { method: 'POST', body: formData })
-                    .then(() => {
-                        // 2. Clear local memory
-                        runLogs = [];
-                        localStorage.removeItem('rcapU12Logs');
-                        renderTable();
-                        alert("Master Logs Cleared!");
+                // Change: Use URLSearchParams to ensure Google reads the 'action' parameter correctly
+                fetch(scriptURL + "?action=clear", { method: 'POST' })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.result === 'cleared') {
+                            runLogs = [];
+                            localStorage.removeItem('rcapU12Logs');
+                            renderTable();
+                            alert("Cloud and Local Logs Cleared!");
+                        }
                     })
                     .catch(error => alert('Error clearing cloud: ' + error.message));
             }
