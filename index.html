@@ -252,26 +252,50 @@
         }
     };
 
-    function saveRun() {
-        let team = document.getElementById('teamName').value || "Unnamed Team";
-        let hazards = document.getElementById('hazardTotal').innerText;
-        let tiles = document.getElementById('tileTotal').innerText;
-        let total = document.getElementById('totalScore').innerText;
-        let redLine = document.getElementById('redLineCheck').checked ? "Pass" : "Fail";
-        
-        // Capture current date and time
-        let now = new Date();
-        let dateTimeStr = now.toLocaleDateString() + " " + now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbxc9jk7QAe7kl3CUIccR1cNHrCj2un8-xAHb2HS7ihTdns7V5ytMfrjOtYZojZvQ1iw/exec';
 
-        // Add to array
-        runLogs.push({ dateTime: dateTimeStr, team, hazards, tiles, redLine, total });
-        
-        // Save to browser LocalStorage
-        localStorage.setItem('rcapU12Logs', JSON.stringify(runLogs));
-        
-        renderTable();
-        alert("Run securely saved to device memory!");
-    }
+    function saveRun() {
+    const btn = document.querySelector('.btn-save');
+    const originalText = btn.innerText;
+    btn.innerText = "⏳ Syncing to Cloud...";
+    btn.disabled = true;
+
+    let team = document.getElementById('teamName').value || "Unnamed Team";
+    let hazards = document.getElementById('hazardTotal').innerText;
+    let tiles = document.getElementById('tileTotal').innerText;
+    let total = document.getElementById('totalScore').innerText;
+    let redLine = document.getElementById('redLineCheck').checked ? "Pass" : "Fail";
+
+    // Prepare data for Google Sheets
+    let formData = new FormData();
+    formData.append('Team', team);
+    formData.append('Hazards', hazards);
+    formData.append('Tiles', tiles);
+    formData.append('RedLine', redLine);
+    formData.append('Total', total);
+
+    // POST to Google Apps Script
+    fetch(scriptURL, { method: 'POST', body: formData })
+        .then(response => {
+            btn.innerText = originalText;
+            btn.disabled = false;
+            
+            // Add to local list for immediate display
+            let now = new Date();
+            let dateTimeStr = now.toLocaleDateString() + " " + now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            
+            runLogs.push({ dateTime: dateTimeStr, team, hazards, tiles, redLine, total });
+            localStorage.setItem('rcapU12Logs', JSON.stringify(runLogs));
+            
+            renderTable();
+            alert("🚀 Success! Data synced to Google Sheets.");
+        })
+        .catch(error => {
+            btn.innerText = originalText;
+            btn.disabled = false;
+            alert('❌ Sync Error: ' + error.message);
+        });
+}
 
     function renderTable() {
         let tbody = document.getElementById('logBody');
