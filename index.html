@@ -1,208 +1,458 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RCJ Entry U12 Score Counter</title>
     <style>
-        :root { 
-            --bg-color: #0f172a; 
-            --card-bg: #1e293b; 
-            --primary: #38bdf8; 
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --primary: #38bdf8;
             --primary-hover: #0284c7;
-            --success: #10b981; 
-            --danger: #ef4444; 
+            --success: #10b981;
+            --danger: #ef4444;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --border-color: #334155;
             --input-bg: #0f172a;
         }
-        
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-color); color: var(--text-main); margin: 0; padding: 20px; }
-        .container { max-width: 800px; margin: auto; }
-        
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+        }
+
         /* Header & Timer */
-        .header-panel { background: #020617; padding: 15px 20px; border-radius: 8px 8px 0 0; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary); }
-        .header-panel h2 { margin: 0; font-size: 20px; color: var(--primary); letter-spacing: 1px; }
-        .timer-display { font-size: 28px; font-family: monospace; font-weight: bold; background: #000; color: var(--success); padding: 5px 15px; border-radius: 5px; letter-spacing: 2px; border: 1px solid var(--border-color); }
-        .timer-controls button { margin-left: 5px; padding: 8px 12px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; transition: 0.2s; }
-        .btn-start { background: var(--success); color: white; }
-        .btn-stop { background: var(--danger); color: white; }
-        .btn-reset { background: #f59e0b; color: black; }
-        .timer-controls button:hover { opacity: 0.8; }
-        
+        .header-panel {
+            background: #020617;
+            padding: 15px 20px;
+            border-radius: 8px 8px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .header-panel h2 {
+            margin: 0;
+            font-size: 20px;
+            color: var(--primary);
+            letter-spacing: 1px;
+        }
+
+        .timer-display {
+            font-size: 28px;
+            font-family: monospace;
+            font-weight: bold;
+            background: #000;
+            color: var(--success);
+            padding: 5px 15px;
+            border-radius: 5px;
+            letter-spacing: 2px;
+            border: 1px solid var(--border-color);
+        }
+
+        .timer-controls button {
+            margin-left: 5px;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        .btn-start {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-stop {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-reset {
+            background: #f59e0b;
+            color: black;
+        }
+
+        .timer-controls button:hover {
+            opacity: 0.8;
+        }
+
         /* Cards & Inputs */
-        .card { background: var(--card-bg); padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); margin-bottom: 20px; border: 1px solid var(--border-color); }
-        .card h3 { margin-top: 0; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; color: var(--primary); font-weight: 600; }
-        
-        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .form-group label { font-weight: bold; display: block; margin-bottom: 5px; font-size: 14px; color: var(--text-muted); }
-        .form-group input { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px; box-sizing: border-box; background: var(--input-bg); color: var(--text-main); }
-        .form-group input:focus { outline: none; border-color: var(--primary); }
-        
+        .card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .card h3 {
+            margin-top: 0;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .form-group label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            box-sizing: border-box;
+            background: var(--input-bg);
+            color: var(--text-main);
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
         /* Hazards */
-        .hazard-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; text-align: center; }
-        .hazard-box { background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; border: 1px solid var(--border-color); }
-        .hazard-box span { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 10px; }
-        .btn-group { display: flex; justify-content: center; align-items: center; gap: 15px; }
-        .btn-group button { width: 40px; height: 40px; font-size: 20px; border: none; border-radius: 5px; background: var(--primary); color: #000; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        .btn-group button:hover { background: var(--primary-hover); color: white; }
-        .btn-group span { font-size: 22px; font-weight: bold; width: 30px; }
-        
+        .hazard-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            text-align: center;
+        }
+
+        .hazard-box {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .hazard-box span {
+            display: block;
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .btn-group button {
+            width: 40px;
+            height: 40px;
+            font-size: 20px;
+            border: none;
+            border-radius: 5px;
+            background: var(--primary);
+            color: #000;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-group button:hover {
+            background: var(--primary-hover);
+            color: white;
+        }
+
+        .btn-group span {
+            font-size: 22px;
+            font-weight: bold;
+            width: 30px;
+        }
+
         /* Checkpoints */
-        .segment-row { display: grid; grid-template-columns: 2fr 1fr 1.5fr auto; gap: 10px; align-items: center; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 5px; margin-bottom: 10px; border: 1px solid var(--border-color); }
-        .segment-row select, .segment-row input { padding: 8px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--input-bg); color: var(--text-main); }
-        .btn-add { background: var(--primary); color: #000; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; transition: 0.2s; }
-        .btn-add:hover { background: var(--primary-hover); color: white; }
-        
+        .segment-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1.5fr auto;
+            gap: 10px;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border-color);
+        }
+
+        .segment-row select,
+        .segment-row input {
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background: var(--input-bg);
+            color: var(--text-main);
+        }
+
+        .btn-add {
+            background: var(--primary);
+            color: #000;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+            margin-top: 10px;
+            transition: 0.2s;
+        }
+
+        .btn-add:hover {
+            background: var(--primary-hover);
+            color: white;
+        }
+
         /* Save & Log */
-        .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
-        .btn-save { background: var(--success); color: white; border: none; padding: 12px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 16px; transition: 0.2s; }
-        .btn-save:hover { background: #059669; }
-        .btn-clear { background: var(--danger); color: white; border: none; padding: 12px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 16px; transition: 0.2s; }
-        .btn-clear:hover { background: #b91c1c; }
-        
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 14px; }
-        th, td { padding: 12px 10px; border: 1px solid var(--border-color); text-align: center; }
-        th { background-color: #020617; color: var(--primary); }
-        tr:nth-child(even) { background-color: rgba(255,255,255,0.02); }
-        
+        .action-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn-save {
+            background: var(--success);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            transition: 0.2s;
+        }
+
+        .btn-save:hover {
+            background: #059669;
+        }
+
+        .btn-clear {
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            transition: 0.2s;
+        }
+
+        .btn-clear:hover {
+            background: #b91c1c;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        th,
+        td {
+            padding: 12px 10px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        th {
+            background-color: #020617;
+            color: var(--primary);
+        }
+
+        tr:nth-child(even) {
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+
         /* Score Board */
-        .score-board { background: #020617; color: var(--success); text-align: center; padding: 20px; border-radius: 8px; font-size: 36px; font-weight: bold; border: 2px solid var(--success); position: sticky; bottom: 20px; z-index: 100; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5); }
-        .score-breakdown { font-size: 16px; font-weight: normal; margin-top: 5px; color: var(--text-muted); }
+        .score-board {
+            background: #020617;
+            color: var(--success);
+            text-align: center;
+            padding: 20px;
+            border-radius: 8px;
+            font-size: 36px;
+            font-weight: bold;
+            border: 2px solid var(--success);
+            position: sticky;
+            bottom: 20px;
+            z-index: 100;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+        }
+
+        .score-breakdown {
+            font-size: 16px;
+            font-weight: normal;
+            margin-top: 5px;
+            color: var(--text-muted);
+        }
     </style>
 </head>
+
 <body>
 
-<div class="container">
-    
-    <div class="header-panel">
-        <h2>RCAP U12 TRAINER DASHBOARD</h2>
-        <div style="display: flex; align-items: center; gap: 15px;">
-            <div class="timer-display" id="timerDisplay">05:00</div>
-            <div class="timer-controls">
-                <button class="btn-start" onclick="startTimer()">Start</button>
-                <button class="btn-stop" onclick="stopTimer()">Stop</button>
-                <button class="btn-reset" onclick="resetTimer()">Reset</button>
-            </div>
-        </div>
-    </div>
+    <div class="container">
 
-    <div class="card" style="border-radius: 0 0 8px 8px; margin-top: 0;">
-        <div class="info-grid">
-            <div class="form-group">
-                <label>Competition Name</label>
-                <input type="text" id="compName" placeholder="e.g., Track A Practice">
-            </div>
-            <div class="form-group">
-                <label>Team Name & Round</label>
-                <input type="text" id="teamName" placeholder="e.g., Team Alpha - Run 1">
-            </div>
-        </div>
-    </div>
-
-    <div class="card">
-        <h3>1. Hazard Navigation</h3>
-        <div class="hazard-grid">
-            <div class="hazard-box">
-                <strong style="color: var(--text-main);">Gaps</strong>
-                <span>(10 pts each)</span>
-                <div class="btn-group">
-                    <button onclick="updateCount('gaps', -1)">-</button>
-                    <span id="gaps">0</span>
-                    <button onclick="updateCount('gaps', 1)">+</button>
-                </div>
-            </div>
-            <div class="hazard-box">
-                <strong style="color: var(--text-main);">Intersections</strong>
-                <span>(10 pts each)</span>
-                <div class="btn-group">
-                    <button onclick="updateCount('intersections', -1)">-</button>
-                    <span id="intersections">0</span>
-                    <button onclick="updateCount('intersections', 1)">+</button>
-                </div>
-            </div>
-            <div class="hazard-box">
-                <strong style="color: var(--text-main);">Obstacles</strong>
-                <span>(20 pts each)</span>
-                <div class="btn-group">
-                    <button onclick="updateCount('obstacles', -1)">-</button>
-                    <span id="obstacles">0</span>
-                    <button onclick="updateCount('obstacles', 1)">+</button>
+        <div class="header-panel">
+            <h2>RCAP U12 TRAINER DASHBOARD</h2>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <div class="timer-display" id="timerDisplay">05:00</div>
+                <div class="timer-controls">
+                    <button class="btn-start" onclick="startTimer()">Start</button>
+                    <button class="btn-stop" onclick="stopTimer()">Stop</button>
+                    <button class="btn-reset" onclick="resetTimer()">Reset</button>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="card">
-        <h3>2. Checkpoint Progression</h3>
-        <div id="segmentsContainer"></div>
-        <button class="btn-add" onclick="addSegment()">+ Add Next Checkpoint Segment</button>
-    </div>
-
-    <div class="card">
-        <h3>3. U12 Tasks & Session Log</h3>
-        <label style="font-size: 16px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 10px; color: var(--text-main); background: rgba(0,0,0,0.2); padding: 15px; border-radius: 5px; border: 1px solid var(--border-color);">
-            <input type="checkbox" id="redLineCheck" style="width: 22px; height: 22px; cursor: pointer;">
-            Red Line Stop Detected successfully
-        </label>
-        
-        <div class="action-grid">
-            <button class="btn-save" onclick="saveRun()">💾 Save Run to Local Storage</button>
-            <button class="btn-clear" onclick="clearLogs()">🗑️ Clear All Logs</button>
+        <div class="card" style="border-radius: 0 0 8px 8px; margin-top: 0;">
+            <div class="info-grid">
+                <div class="form-group">
+                    <label>Competition Name</label>
+                    <input type="text" id="compName" placeholder="e.g., Track A Practice">
+                </div>
+                <div class="form-group">
+                    <label>Team Name & Round</label>
+                    <input type="text" id="teamName" placeholder="e.g., Team Alpha - Run 1">
+                </div>
+            </div>
         </div>
-        
-        <h4 style="margin-top: 25px; border-bottom: 1px solid var(--border-color); padding-bottom: 5px; color: var(--primary);">Saved Sessions (Persists on Refresh)</h4>
-        <div style="overflow-x: auto;">
-            <table id="logTable">
-                <thead>
-                    <tr>
-                        <th>Date & Time</th>
-                        <th>Team/Round</th>
-                        <th>Hazards</th>
-                        <th>Tiles</th>
-                        <th>Red Line</th>
-                        <th>Total</th>
-                    </tr>
-                </thead>
-                <tbody id="logBody">
+
+        <div class="card">
+            <h3>1. Hazard Navigation</h3>
+            <div class="hazard-grid">
+                <div class="hazard-box">
+                    <strong style="color: var(--text-main);">Gaps</strong>
+                    <span>(10 pts each)</span>
+                    <div class="btn-group">
+                        <button onclick="updateCount('gaps', -1)">-</button>
+                        <span id="gaps">0</span>
+                        <button onclick="updateCount('gaps', 1)">+</button>
+                    </div>
+                </div>
+                <div class="hazard-box">
+                    <strong style="color: var(--text-main);">Intersections</strong>
+                    <span>(10 pts each)</span>
+                    <div class="btn-group">
+                        <button onclick="updateCount('intersections', -1)">-</button>
+                        <span id="intersections">0</span>
+                        <button onclick="updateCount('intersections', 1)">+</button>
+                    </div>
+                </div>
+                <div class="hazard-box">
+                    <strong style="color: var(--text-main);">Obstacles</strong>
+                    <span>(20 pts each)</span>
+                    <div class="btn-group">
+                        <button onclick="updateCount('obstacles', -1)">-</button>
+                        <span id="obstacles">0</span>
+                        <button onclick="updateCount('obstacles', 1)">+</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>2. Checkpoint Progression</h3>
+            <div id="segmentsContainer"></div>
+            <button class="btn-add" onclick="addSegment()">+ Add Next Checkpoint Segment</button>
+        </div>
+
+        <div class="card">
+            <h3>3. U12 Tasks & Session Log</h3>
+            <label
+                style="font-size: 16px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 10px; color: var(--text-main); background: rgba(0,0,0,0.2); padding: 15px; border-radius: 5px; border: 1px solid var(--border-color);">
+                <input type="checkbox" id="redLineCheck" style="width: 22px; height: 22px; cursor: pointer;">
+                Red Line Stop Detected successfully
+            </label>
+
+            <div class="action-grid">
+                <button class="btn-save" onclick="saveRun()">💾 Save Run to Local Storage</button>
+                <button class="btn-clear" onclick="clearLogs()">🗑️ Clear All Logs</button>
+            </div>
+
+            <h4
+                style="margin-top: 25px; border-bottom: 1px solid var(--border-color); padding-bottom: 5px; color: var(--primary);">
+                Saved Sessions (Persists on Refresh)</h4>
+            <div style="overflow-x: auto;">
+                <table id="logTable">
+                    <thead>
+                        <tr>
+                            <th>Date & Time</th>
+                            <th>Team/Round</th>
+                            <th>Hazards</th>
+                            <th>Tiles</th>
+                            <th>Red Line</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody id="logBody">
                     </tbody>
-            </table>
+                </table>
+            </div>
         </div>
+
+        <div class="score-board">
+            TOTAL SCORE: <span id="totalScore">0</span>
+            <div class="score-breakdown">
+                Hazards: <span id="hazardTotal">0</span> | Tiles: <span id="tileTotal">0</span>
+            </div>
+        </div>
+
     </div>
 
-    <div class="score-board">
-        TOTAL SCORE: <span id="totalScore">0</span>
-        <div class="score-breakdown">
-            Hazards: <span id="hazardTotal">0</span> | Tiles: <span id="tileTotal">0</span>
-        </div>
-    </div>
+    <script>
+        // --- SCORE LOGIC ---
+        let counts = { gaps: 0, intersections: 0, obstacles: 0 };
+        let segmentCount = 0;
 
-</div>
-
-<script>
-    // --- SCORE LOGIC ---
-    let counts = { gaps: 0, intersections: 0, obstacles: 0 };
-    let segmentCount = 0;
-
-    function updateCount(type, change) {
-        if (counts[type] + change >= 0) {
-            counts[type] += change;
-            document.getElementById(type).innerText = counts[type];
-            calculateScore();
+        function updateCount(type, change) {
+            if (counts[type] + change >= 0) {
+                counts[type] += change;
+                document.getElementById(type).innerText = counts[type];
+                calculateScore();
+            }
         }
-    }
 
-    function addSegment() {
-        segmentCount++;
-        const container = document.getElementById('segmentsContainer');
-        const row = document.createElement('div');
-        row.className = 'segment-row';
-        row.id = `segment-${segmentCount}`;
-        
-        let segmentName = segmentCount === 1 ? "Start to CP 1" : `CP ${segmentCount-1} to CP ${segmentCount}`;
-        
-        row.innerHTML = `
+        function addSegment() {
+            segmentCount++;
+            const container = document.getElementById('segmentsContainer');
+            const row = document.createElement('div');
+            row.className = 'segment-row';
+            row.id = `segment-${segmentCount}`;
+
+            let segmentName = segmentCount === 1 ? "Start to CP 1" : `CP ${segmentCount - 1} to CP ${segmentCount}`;
+
+            row.innerHTML = `
             <strong style="color: var(--text-main);">${segmentName}</strong>
             <input type="number" min="0" placeholder="Tiles" class="seg-tiles" onchange="calculateScore()">
             <select class="seg-attempt" onchange="calculateScore()">
@@ -213,100 +463,112 @@
             </select>
             <button onclick="removeSegment('${row.id}')" style="background:var(--danger);color:white;border:none;padding:8px;border-radius:4px;cursor:pointer;font-weight:bold;">X</button>
         `;
-        container.appendChild(row);
-        calculateScore();
-    }
-
-    function removeSegment(id) {
-        document.getElementById(id).remove();
-        calculateScore();
-    }
-
-    function calculateScore() {
-        let hazardPoints = (counts.gaps * 10) + (counts.intersections * 10) + (counts.obstacles * 20);
-        
-        let tilePoints = 0;
-        document.querySelectorAll('.segment-row').forEach(row => {
-            let tiles = parseInt(row.querySelector('.seg-tiles').value) || 0;
-            let multiplier = parseInt(row.querySelector('.seg-attempt').value) || 0;
-            tilePoints += (tiles * multiplier);
-        });
-
-        document.getElementById('hazardTotal').innerText = hazardPoints;
-        document.getElementById('tileTotal').innerText = tilePoints;
-        document.getElementById('totalScore').innerText = hazardPoints + tilePoints;
-    }
-
-    // Initialize with one segment
-    addSegment();
-
-    // --- LOCAL STORAGE LOGIC ---
-    let runLogs = [];
-
-    // Load logs from browser memory when the page opens
-    window.onload = function() {
-        let storedLogs = localStorage.getItem('rcapU12Logs');
-        if (storedLogs) {
-            runLogs = JSON.parse(storedLogs);
-            renderTable();
+            container.appendChild(row);
+            calculateScore();
         }
-    };
 
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbxc9jk7QAe7kl3CUIccR1cNHrCj2un8-xAHb2HS7ihTdns7V5ytMfrjOtYZojZvQ1iw/exec';
+        function removeSegment(id) {
+            document.getElementById(id).remove();
+            calculateScore();
+        }
 
-    function saveRun() {
-    const btn = document.querySelector('.btn-save');
-    const originalText = btn.innerText;
-    btn.innerText = "⏳ Syncing to Cloud...";
-    btn.disabled = true;
+        function calculateScore() {
+            let hazardPoints = (counts.gaps * 10) + (counts.intersections * 10) + (counts.obstacles * 20);
 
-    let team = document.getElementById('teamName').value || "Unnamed Team";
-    let hazards = document.getElementById('hazardTotal').innerText;
-    let tiles = document.getElementById('tileTotal').innerText;
-    let total = document.getElementById('totalScore').innerText;
-    let redLine = document.getElementById('redLineCheck').checked ? "Pass" : "Fail";
+            let tilePoints = 0;
+            document.querySelectorAll('.segment-row').forEach(row => {
+                let tiles = parseInt(row.querySelector('.seg-tiles').value) || 0;
+                let multiplier = parseInt(row.querySelector('.seg-attempt').value) || 0;
+                tilePoints += (tiles * multiplier);
+            });
 
-    // Prepare data for Google Sheets
-    let formData = new FormData();
-    formData.append('Team', team);
-    formData.append('Hazards', hazards);
-    formData.append('Tiles', tiles);
-    formData.append('RedLine', redLine);
-    formData.append('Total', total);
+            document.getElementById('hazardTotal').innerText = hazardPoints;
+            document.getElementById('tileTotal').innerText = tilePoints;
+            document.getElementById('totalScore').innerText = hazardPoints + tilePoints;
+        }
 
-    // POST to Google Apps Script
-    fetch(scriptURL, { method: 'POST', body: formData })
-        .then(response => {
-            btn.innerText = originalText;
-            btn.disabled = false;
-            
-            // Add to local list for immediate display
-            let now = new Date();
-            let dateTimeStr = now.toLocaleDateString() + " " + now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-            
-            runLogs.push({ dateTime: dateTimeStr, team, hazards, tiles, redLine, total });
-            localStorage.setItem('rcapU12Logs', JSON.stringify(runLogs));
-            
-            renderTable();
-            alert("🚀 Success! Data synced to Google Sheets.");
-        })
-        .catch(error => {
-            btn.innerText = originalText;
-            btn.disabled = false;
-            alert('❌ Sync Error: ' + error.message);
-        });
-}
+        // Initialize with one segment
+        addSegment();
 
-    function renderTable() {
-        let tbody = document.getElementById('logBody');
-        tbody.innerHTML = ""; // Clear current table
-        
-        // Render newest logs at the top
-        let reversedLogs = [...runLogs].reverse();
-        
-        reversedLogs.forEach(log => {
-            let rowColor = log.redLine === "Pass" ? "color: var(--success);" : "color: var(--danger);";
-            let row = `<tr>
+        // --- LOCAL STORAGE LOGIC ---
+        let runLogs = [];
+
+        // Load logs from browser memory when the page opens
+        window.onload = function () {
+            // Fetch from Google instead of just LocalStorage
+            fetch(scriptURL)
+                .then(res => res.json())
+                .then(data => {
+                    if (data && data.length > 0) {
+                        // Map Google data back to our table format
+                        runLogs = data.map(row => ({
+                            dateTime: row.Timestamp,
+                            team: row.Team,
+                            hazards: row.Hazards,
+                            tiles: row.Tiles,
+                            redLine: row.RedLine,
+                            total: row.Total
+                        }));
+                        renderTable();
+                    }
+                });
+        };
+
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbxc9jk7QAe7kl3CUIccR1cNHrCj2un8-xAHb2HS7ihTdns7V5ytMfrjOtYZojZvQ1iw/exec';
+
+        function saveRun() {
+            const btn = document.querySelector('.btn-save');
+            const originalText = btn.innerText;
+            btn.innerText = "⏳ Syncing to Cloud...";
+            btn.disabled = true;
+
+            let team = document.getElementById('teamName').value || "Unnamed Team";
+            let hazards = document.getElementById('hazardTotal').innerText;
+            let tiles = document.getElementById('tileTotal').innerText;
+            let total = document.getElementById('totalScore').innerText;
+            let redLine = document.getElementById('redLineCheck').checked ? "Pass" : "Fail";
+
+            // Prepare data for Google Sheets
+            let formData = new FormData();
+            formData.append('Team', team);
+            formData.append('Hazards', hazards);
+            formData.append('Tiles', tiles);
+            formData.append('RedLine', redLine);
+            formData.append('Total', total);
+
+            // POST to Google Apps Script
+            fetch(scriptURL, { method: 'POST', body: formData })
+                .then(response => {
+                    btn.innerText = originalText;
+                    btn.disabled = false;
+
+                    // Add to local list for immediate display
+                    let now = new Date();
+                    let dateTimeStr = now.toLocaleDateString() + " " + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+                    runLogs.push({ dateTime: dateTimeStr, team, hazards, tiles, redLine, total });
+                    localStorage.setItem('rcapU12Logs', JSON.stringify(runLogs));
+
+                    renderTable();
+                    alert("🚀 Success! Data synced to Google Sheets.");
+                })
+                .catch(error => {
+                    btn.innerText = originalText;
+                    btn.disabled = false;
+                    alert('❌ Sync Error: ' + error.message);
+                });
+        }
+
+        function renderTable() {
+            let tbody = document.getElementById('logBody');
+            tbody.innerHTML = ""; // Clear current table
+
+            // Render newest logs at the top
+            let reversedLogs = [...runLogs].reverse();
+
+            reversedLogs.forEach(log => {
+                let rowColor = log.redLine === "Pass" ? "color: var(--success);" : "color: var(--danger);";
+                let row = `<tr>
                 <td style="font-size: 12px; color: var(--text-muted);">${log.dateTime || "-"}</td>
                 <td style="font-weight:bold;">${log.team}</td>
                 <td>${log.hazards}</td>
@@ -314,50 +576,61 @@
                 <td style="font-weight:bold; ${rowColor}">${log.redLine}</td>
                 <td style="font-weight:bold; color: var(--success); font-size: 16px;">${log.total}</td>
             </tr>`;
-            tbody.innerHTML += row;
-        });
-    }
-
-    function clearLogs() {
-        if(confirm("Are you sure you want to clear all saved session data? This cannot be undone.")) {
-            runLogs = [];
-            localStorage.removeItem('rcapU12Logs');
-            renderTable();
+                tbody.innerHTML += row;
+            });
         }
-    }
 
-    // --- TIMER LOGIC ---
-    let timeLeft = 300; 
-    let timerInterval = null;
+        function clearLogs() {
+            if (confirm("Are you sure? This will wipe the Google Sheet AND local logs!")) {
+                // 1. Tell Google to clear the sheet
+                let formData = new FormData();
+                formData.append('action', 'clear');
 
-    function updateTimerDisplay() {
-        let minutes = Math.floor(timeLeft / 60);
-        let seconds = timeLeft % 60;
-        document.getElementById('timerDisplay').innerText = 
-            (minutes < 10 ? "0" : "") + minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
-    }
-
-    function startTimer() {
-        if (!timerInterval && timeLeft > 0) {
-            timerInterval = setInterval(() => {
-                timeLeft--;
-                updateTimerDisplay();
-                if (timeLeft <= 0) stopTimer();
-            }, 1000);
+                fetch(scriptURL, { method: 'POST', body: formData })
+                    .then(() => {
+                        // 2. Clear local memory
+                        runLogs = [];
+                        localStorage.removeItem('rcapU12Logs');
+                        renderTable();
+                        alert("Master Logs Cleared!");
+                    })
+                    .catch(error => alert('Error clearing cloud: ' + error.message));
+            }
         }
-    }
 
-    function stopTimer() {
-        clearInterval(timerInterval);
-        timerInterval = null;
-    }
+        // --- TIMER LOGIC ---
+        let timeLeft = 300;
+        let timerInterval = null;
 
-    function resetTimer() {
-        stopTimer();
-        timeLeft = 300;
-        updateTimerDisplay();
-    }
-</script>
+        function updateTimerDisplay() {
+            let minutes = Math.floor(timeLeft / 60);
+            let seconds = timeLeft % 60;
+            document.getElementById('timerDisplay').innerText =
+                (minutes < 10 ? "0" : "") + minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
+        }
+
+        function startTimer() {
+            if (!timerInterval && timeLeft > 0) {
+                timerInterval = setInterval(() => {
+                    timeLeft--;
+                    updateTimerDisplay();
+                    if (timeLeft <= 0) stopTimer();
+                }, 1000);
+            }
+        }
+
+        function stopTimer() {
+            clearInterval(timerInterval);
+            timerInterval = null;
+        }
+
+        function resetTimer() {
+            stopTimer();
+            timeLeft = 300;
+            updateTimerDisplay();
+        }
+    </script>
 
 </body>
+
 </html>
