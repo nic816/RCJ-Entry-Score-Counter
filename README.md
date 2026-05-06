@@ -1,6 +1,6 @@
 # 🤖 RCJ Entry U12 Score Tracker
 
-A professional, cloud-synced scoring dashboard designed for **RCJ (RoboCup Junior Rescue Line) Entry U12 Category**. This tool helps trainers record mock runs instantly on a tablet and sync them directly to a Google Sheet for long-term data analysis.
+A cloud-synced scoring dashboard designed for **RCJ (RoboCup Junior Rescue Line) Entry U12 Category**. This tool helps trainers record mock runs instantly on devices and sync them directly to a Google Sheet for long-term data analysis.
 
 ## 🚀 Live Demo
 You can access the dashboard here: 
@@ -14,9 +14,8 @@ You can access the dashboard here:
 * **Real-Time Scoring:** Automatically calculates points for Gaps (10pts), Intersections (10pts), and Obstacles (20pts).
 * **Checkpoint Tracking:** Dynamic segment creator with multipliers for 1st, 2nd, and 3rd attempts.
 * **U12 Mission Task:** Dedicated toggle for the Red Line Stop detection.
-* **Multi-Device Cloud Sync:** Save a run on an iPad, and it instantly appears on your Laptop via **Google Sheets**.
+* **Multi-Device Cloud Sync:** Save a run on any device, and access it on any device via **Google Sheets**.
 * **Persistent Session Log:** Data survives page refreshes using a combination of `localStorage` and Google Apps Script.
-* **Dark Mode UI:** High-contrast dashboard optimized for low-light training environments or outdoor glare.
 
 ---
 
@@ -43,7 +42,7 @@ You can access the dashboard here:
 * **Who has access:** Anyone.
 * **Copy the Web App URL.**
 
-### 3. The Frontend (VS Code)
+### 3. The Frontend (Coding IDE)
 * Open `index.html`.
 * Replace `const scriptURL = '...'` with your copied URL.
 * Commit and Sync to GitHub.
