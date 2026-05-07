@@ -2,7 +2,7 @@
 
 A lightweight scoring dashboard for **RCAP Rescue Line Entry, U12** training runs. Coaches can log hazards, checkpoint tiles, and missions during live sessions — all saved to a private Google Sheet in real time.
 
-![RCAP Rescue Line Entry, U12](https://img.shields.io/badge/RoboCup_Junior-Rescue_Line_U12-00e5ff?style=for-the-badge)
+> ![Dashboard Screenshot](screenshot.png)
 
 ---
 
@@ -39,20 +39,57 @@ This is a single-file web application. To use the cloud-saving feature, you must
 1. Download the `index.html` file from this repository.
 2. You can open this file in any web browser to use the tracker locally. However, to save data permanently, proceed to Step 2.
 
-### Step 2: Set Up Your Google Sheet
+### Step 2: Set Up Your Google Sheet & Database
 1. Create a new [Google Sheet](https://sheets.new/).
-2. In the first row, create the following headers exactly as written: 
+2. In the **first row**, create the following headers exactly as written: 
    `Timestamp` | `Team` | `Hazards` | `Tiles` | `RedLine` | `Total`
 3. Click on **Extensions > Apps Script**.
-4. Delete any code in the editor and paste in your Apps Script code (you will need a basic script to accept POST requests and append rows to your sheet).
-5. Click **Deploy > New Deployment**.
-6. Select **Web App** as the type.
-7. Set "Who has access" to **Anyone**.
-8. Click Deploy and **copy the Web App URL**.
+4. Delete any code in the editor and paste the following database script:
 
-### Step 3: Link the Tracker to Your Sheet
-1. Open your downloaded `index.html` file in any text editor (like Notepad or VS Code).
-2. Scroll down to approximately line 351 to find the configuration variable.
-3. Replace the placeholder with your copied Google Web App URL:
-   ```javascript
-   const scriptURL = 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE';
+```javascript
+const SHEET_NAME = 'Sheet1'; // Change this if you rename your tab at the bottom of Google Sheets
+
+// READ DATA (Loads previous runs on page refresh)
+function doGet(e) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME);
+  const data = sheet.getDataRange().getValues();
+  const headers = data[0];
+  const rows = data.slice(1);
+  
+  const formattedData = rows.map(row => {
+    let obj = {};
+    headers.forEach((header, i) => { obj[header] = row[i]; });
+    return obj;
+  });
+  
+  return ContentService.createTextOutput(JSON.stringify(formattedData))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+// WRITE OR DELETE DATA (Saves new runs or clears logs)
+function doPost(e) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME);
+  
+  // Handle "Clear Logs" request
+  if (e.parameter.action === 'clear') {
+    if (sheet.getLastRow() > 1) {
+      sheet.deleteRows(2, sheet.getLastRow() - 1);
+    }
+    return ContentService.createTextOutput(JSON.stringify({ result: 'cleared' }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  // Handle "Save Run" request
+  const rowData = [
+    new Date().toLocaleString(),
+    e.parameter.Team || '',
+    e.parameter.Hazards || 0,
+    e.parameter.Tiles || 0,
+    e.parameter.RedLine || '',
+    e.parameter.Total || 0
+  ];
+  sheet.appendRow(rowData);
+  
+  return ContentService.createTextOutput(JSON.stringify({ result: 'success' }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
