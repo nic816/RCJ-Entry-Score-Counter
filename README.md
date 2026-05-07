@@ -203,14 +203,6 @@ const scriptURL = 'https://script.google.com/macros/s/XXXXXXXXXXXXXXXXXXXX/exec'
 
 ---
 
-# 🔒 Data Storage
-
-All run data is stored privately in your own Google Sheet.
-
-No external server or database is required.
-
----
-
 # 🛠️ Troubleshooting
 
 ## Runs Are Not Saving
@@ -243,22 +235,6 @@ Ensure:
 - The `doGet()` function exists
 - Your deployment is updated after code changes
 - You refreshed the browser after saving
-
----
-
-# 🤝 Contributing
-
-Contributions are welcome.
-
-You can improve:
-
-- UI/UX
-- Mobile responsiveness
-- Additional scoring systems
-- Performance
-- Accessibility
-
-Fork the repository and submit a pull request.
 
 ---
 
