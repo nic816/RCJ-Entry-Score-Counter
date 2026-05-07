@@ -514,9 +514,15 @@
                 });
         };
 
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbxc9jk7QAe7kl3CUIccR1cNHrCj2un8-xAHb2HS7ihTdns7V5ytMfrjOtYZojZvQ1iw/exec';
+        // Add your Google Apps Script Web App URL here
+        const scriptURL = 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE';
 
         function saveRun() {
+
+            if (scriptURL === 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE' || scriptURL === '') {
+                alert("⚠️ Cloud saving is not set up! Please read the README to connect your own Google Sheet. Your run will only be saved locally.");
+            }
+
             const btn = document.querySelector('.btn-save');
             const originalText = btn.innerText;
             btn.innerText = "⏳ Syncing to Cloud...";
