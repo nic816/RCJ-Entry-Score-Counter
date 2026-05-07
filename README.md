@@ -1,8 +1,8 @@
-# RCJ U12 Score Tracker
+# RCAP Rescue Line Entry, U12 Score Tracker
 
-A professional, lightweight scoring dashboard for **RoboCup Junior Rescue Line U12** training runs. Coaches can log hazards, checkpoint tiles, and missions during live sessions — all saved to a private Google Sheet in real time.
+A lightweight scoring dashboard for **RCAP Rescue Line Entry, U12** training runs. Coaches can log hazards, checkpoint tiles, and missions during live sessions — all saved to a private Google Sheet in real time.
 
-![RCJ U12 Score Tracker](https://img.shields.io/badge/RoboCup_Junior-Rescue_Line_U12-00e5ff?style=for-the-badge)
+![RCAP Rescue Line Entry, U12](https://img.shields.io/badge/RoboCup_Junior-Rescue_Line_U12-00e5ff?style=for-the-badge)
 
 ---
 
@@ -17,7 +17,7 @@ A professional, lightweight scoring dashboard for **RoboCup Junior Rescue Line U
 
 ---
 
-## 📋 Scoring Rules (RCJ Rescue Line U12)
+## 📋 Scoring Rules (RCAP Rescue Line Entry, U12)
 
 | Element | Points |
 |---|---|
